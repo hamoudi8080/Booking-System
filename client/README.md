@@ -19,8 +19,11 @@ npm install --save react-router-dom
 
 
 
-# source of information:
+# source of information and technical:
 
 to know the difference between routing..
 https://www.geeksforgeeks.org/reactjs-types-of-routers/
+
+grow css is used look at this link 
+https://tailwindcss.com/docs/flex-grow
 
