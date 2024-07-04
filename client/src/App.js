@@ -6,8 +6,10 @@ import Layout from './Layout';
 import RegisterPage from './pages/RegisterPage';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:5000'; // Set the base URL for the axios instance
 
+
+axios.defaults.baseURL = 'http://localhost:4000'; // Set the base URL for the axios instance
+axios.defaults.withCredentials = true; // Send cookies with requests
 
 function App() {
   return (
@@ -17,7 +19,7 @@ function App() {
         <Route index element={<IndexPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-      </Route>
+      </Route> 
 
     </Routes>
   );
