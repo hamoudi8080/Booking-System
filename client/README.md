@@ -18,7 +18,6 @@ To add Axios for handling HTTP requests, install it in clinet folder
 npm install axios
 
 
-
 Install express for backend, install it in api folder
 npm install express 
 
@@ -40,6 +39,8 @@ npm install bcryptjs
 install json web token in api folder
 npm install jsonwebtoken
 
+install to read the cookies in api folder
+npm install cookie-parser
 
 # source of information and technical:
 
@@ -71,7 +72,9 @@ https://www.npmjs.com/package/bcrypt
 
 
 
+## Technical questions and answers
 
+we want to protect our apis! but how??
 
 # why jwt is important
 
@@ -129,3 +132,21 @@ Security: Cookies can be configured to only be sent over secure (HTTPS) connecti
 Automatic Sending: Once a cookie is set, the user’s browser will automatically include it in all future requests to the same domain. This means the user doesn’t have to manually attach the JWT to every request they make.
 Domain Restriction: Cookies are only sent to the domain that set them. This provides an additional layer of security as it ensures that the JWT can’t be sent to any malicious third-party domains.
 So, in the login route you provided, once the user is authenticated, a JWT is created and sent back to the user’s browser inside a cookie. For all subsequent requests, the user’s browser will automatically include this cookie, allowing the server to verify the user’s identity and provide access to protected resources.
+
+
+# Why send a token to the client?
+
+Authentication: The token is used to authenticate the client on subsequent requests. After the client logs in, the server creates a token and sends it to the client. The client then sends this token in the header of every subsequent request. The server verifies the token and if it’s valid, the server knows the request is coming from an authenticated client.
+
+Stateless Servers: In a stateless server architecture, the server does not store any information about the client’s state. The token is used to carry the necessary data for each request and response. This makes the server more scalable and efficient.
+Security: The token can be set to expire after a certain period of time. This means that even if an attacker manages to get hold of a token, they can only use it for a limited time.
+
+# Why include the user’s information in the token?
+
+Efficiency: Including the user’s information in the token (also known as a JWT - JSON Web Token) allows the server to know who the client is without having to query the database on each request. This can make the application more efficient.
+Stateless Servers: As mentioned above, in a stateless server architecture, the server does not store any information about the client’s state. The token carries the necessary data for each request and response.
+
+# Why store the token in cookies?
+
+Persistence: Storing the token in cookies allows the token to persist even if the client closes the browser or navigates away from the site. This means the client won’t have to log in again every time they visit the site.
+Security: Cookies can be set to httpOnly, which means they can’t be accessed by client-side JavaScript. This can help prevent cross-site scripting (XSS) attacks. Cookies can also be set to secure, which means they will only be sent over HTTPS, helping to protect the data from being intercepted.
