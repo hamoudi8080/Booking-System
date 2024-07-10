@@ -8,17 +8,21 @@ export const UserContext = createContext({});
 export function UserContextProvider(props) {
     const { children } = props;
     const [user, setUser] = useState(null);
+    const [ready, setReady] = useState(false);
+//     The useEffect hook is used to fetch the user's information from the server when the UserContextProvider component is mounted.
+//     useEffect will run at least once when the component is mounted, and it will not run again unless the dependencies array is updated.
     useEffect(  () => {
         if (!user) {
            axios.get('/profile').then(({data}) => {
             setUser(data);
+            setReady(true);
            });
     
         }
 
     }, []);
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, setUser, ready }}>
             {children}
         </UserContext.Provider>
     );

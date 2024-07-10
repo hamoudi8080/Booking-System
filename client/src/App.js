@@ -7,6 +7,7 @@ import RegisterPage from './pages/RegisterPage';
 import axios from 'axios';
 import { UserContextProvider } from './UserContext'; // Import the UserContextProvider component
 import { useEffect } from 'react';
+import AccountPage from './pages/AccountPage';
 
 
 axios.defaults.baseURL = 'http://localhost:4000'; // Set the base URL for the axios instance
@@ -23,6 +24,9 @@ function App() {
           <Route index element={<IndexPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/account/:subpage?" element={<AccountPage />} />
+           
+
         </Route>
       </Routes>
     </UserContextProvider>
