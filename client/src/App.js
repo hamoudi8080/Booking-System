@@ -6,7 +6,7 @@ import Layout from './Layout';
 import RegisterPage from './pages/RegisterPage';
 import axios from 'axios';
 import { UserContextProvider } from './UserContext'; // Import the UserContextProvider component
-import { useEffect } from 'react';
+ 
 import AccountPage from './pages/AccountPage';
 
 
@@ -25,6 +25,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/account/:subpage?" element={<AccountPage />} />
+          <Route path="/account/:subpage/:action" element={<AccountPage />} />
            
 
         </Route>
