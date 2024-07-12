@@ -42,6 +42,14 @@ npm install jsonwebtoken
 install to read the cookies in api folder
 npm install cookie-parser
 
+
+install Node Image Downloader, url (required) - the image URL to download
+dest (required) - the image destination. Can be a directory or a filename. If a directory is given, ID will automatically extract the image filename from options.url
+
+npm install --save image-downloader
+
+more about it look at https://www.npmjs.com/package/image-downloader
+
 # source of information and technical:
 
 to know the difference between routing..

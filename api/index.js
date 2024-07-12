@@ -11,6 +11,8 @@ const app = express();
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'fdafkdhnalkfhsjhkl4h1312d';
 
+const imageDownloader = require('image-downloader');
+
 // that tells the Express app to automatically parse incoming requests with JSON payloads. 
 //This means that it converts the JSON payload of incoming requests into JavaScript objects
 app.use(express.json());
@@ -51,27 +53,27 @@ app.post('/register', async (req, res) => {
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    const userDoc = await User.findOne({email});
+    const userDoc = await User.findOne({ email });
     if (userDoc) {
         const passOk = bcrypt.compareSync(password, userDoc.password);
         if (passOk) {
             jwt.sign({
-                email: userDoc.email, 
+                email: userDoc.email,
                 id: userDoc._id,
-                
+
 
             },
-            jwtSecret, 
-            {}, 
-            (err, token) => {
-                if (err) {
-                    throw err; // Consider handling the error more gracefully
-                }
-                // Set the token in the cookie correctly and send a userDoc as response
-                console.log(token);
-                console.log("userDoc"+userDoc);
-                res.cookie('token', token).json(userDoc);
-            });
+                jwtSecret,
+                {},
+                (err, token) => {
+                    if (err) {
+                        throw err; // Consider handling the error more gracefully
+                    }
+                    // Set the token in the cookie correctly and send a userDoc as response
+                    console.log(token);
+                    console.log("userDoc" + userDoc);
+                    res.cookie('token', token).json(userDoc);
+                });
         } else {
             res.status(422).json('Unauthorized');
         }
@@ -81,21 +83,21 @@ app.post('/login', async (req, res) => {
 });
 
 app.get('/profile', async (req, res) => {
-        const {token} = req.cookies;
+    const { token } = req.cookies;
 
-        /*If the ‘token’ exists, the server attempts to verify it using jwt.verify.
-        The jwt.verify function checks if the token is valid and has not been tampered with. 
-        It uses the secret key (jwtSecret) that was used to sign the token. */
-        if (token){
-            jwt.verify(token, jwtSecret,{}, async (err, userData) => {
-                if (err) throw err;
-                const {name,email,_id} = await User.findById(userData.id);
-                res.json({name,email,_id});
-            });
-        }else{
-            res.json(null);
-        }
-       
+    /*If the ‘token’ exists, the server attempts to verify it using jwt.verify.
+    The jwt.verify function checks if the token is valid and has not been tampered with. 
+    It uses the secret key (jwtSecret) that was used to sign the token. */
+    if (token) {
+        jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+            if (err) throw err;
+            const { name, email, _id } = await User.findById(userData.id);
+            res.json({ name, email, _id });
+        });
+    } else {
+        res.json(null);
+    }
+
 })
 
 
@@ -105,6 +107,16 @@ app.post('/logout', (req, res) => {
 });
 
 
+
+app.post('/upload-by-link', async (req, res) => {
+    const { link } = req.body;
+    const newName = 'photo' + Date.now() + '.jpg';
+    await imageDownloader.image({
+        url: link,
+        dest: __dirname + '/uploads/' + newName,
+    });
+    res.json(newName);
+});
 
 
 
