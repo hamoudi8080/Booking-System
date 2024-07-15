@@ -50,6 +50,12 @@ npm install --save image-downloader
 
 more about it look at https://www.npmjs.com/package/image-downloader
 
+
+
+todo upload the image,
+install:  npm install multer 
+in api directory
+
 # source of information and technical:
 
 to know the difference between routing..

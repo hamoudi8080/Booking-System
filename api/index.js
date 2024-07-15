@@ -7,17 +7,22 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const app = express();
-
+const fs = require('fs');
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'fdafkdhnalkfhsjhkl4h1312d';
 
 const imageDownloader = require('image-downloader');
-
+const multer = require('multer');
 // that tells the Express app to automatically parse incoming requests with JSON payloads. 
 //This means that it converts the JSON payload of incoming requests into JavaScript objects
 app.use(express.json());
 
 app.use(cookieParser());
+
+//without this line, the server would not be able to serve the images or display image in the browser.
+// try delete bellow line and go to http://localhost:4000/uploads/photo1720997349771.jpg.
+app.use('/uploads', express.static(__dirname + '/uploads'));
+
 // allow requests from localhost:3000
 app.use(cors({
     credentials: true,
@@ -117,7 +122,27 @@ app.post('/upload-by-link', async (req, res) => {
     });
     res.json(newName);
 });
-
-
+// photosMiddleware.array('photos', 100) is a middleware function provided by multer.
+//array('photos', 100) indicates that this route expects an array of files under the field name photos. The 100 is the maximum number of files that can be uploaded in one request.
+const photosMiddleware = multer({ dest: 'uploads/' });
+app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
+    const uploadsFiles = [];
+    try {
+        for (let i = 0; i < req.files.length; i++) {
+             debugger
+            const { path, originalname } = req.files[i];
+            const parts = originalname.split('.');
+            const ext = parts[parts.length - 1];
+            const newPath = path + '.' + ext;
+            fs.renameSync(path, newPath); 
+            uploadsFiles.push(newPath.replace('uploads\\',''));
+        } 
+        console.log(uploadsFiles);
+        res.json(uploadsFiles);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Failed to process files');
+    }
+});
 
 app.listen(4000);
