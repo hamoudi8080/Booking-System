@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const User = require('./models/User');
+const Place = require('./models/Place');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
@@ -28,6 +29,8 @@ app.use(cors({
     credentials: true,
     origin: 'http://localhost:3000',
 }));
+
+
 
 // Now process.env.MONGO_URL should be defined
 mongoose.connect(process.env.MONGO_URL);
@@ -129,14 +132,14 @@ app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
     const uploadsFiles = [];
     try {
         for (let i = 0; i < req.files.length; i++) {
-             debugger
+            debugger
             const { path, originalname } = req.files[i];
             const parts = originalname.split('.');
             const ext = parts[parts.length - 1];
             const newPath = path + '.' + ext;
-            fs.renameSync(path, newPath); 
-            uploadsFiles.push(newPath.replace('uploads\\',''));
-        } 
+            fs.renameSync(path, newPath);
+            uploadsFiles.push(newPath.replace('uploads\\', ''));
+        }
         console.log(uploadsFiles);
         res.json(uploadsFiles);
     } catch (error) {
@@ -144,5 +147,31 @@ app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
         res.status(500).json('Failed to process files');
     }
 });
+
+
+app.post('/places', (req, res) => {
+    const { token } = req.cookies;
+    const { title, address, photos, description, perks, extraInfo, checkInTime, checkOutTime, maxGuests } = req.body;
+
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+        if (err) throw err;
+        const placeDoc = await Place.create({
+            owner: userData.id,
+            title, 
+            address, 
+            photos,
+            description, 
+            perks, 
+            extraInfo, 
+            checkInTime,
+            checkOutTime,
+            maxGuests,
+        });
+        res.json(placeDoc);
+    });
+});
+
+
+
 
 app.listen(4000);
