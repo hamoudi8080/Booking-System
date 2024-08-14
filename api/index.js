@@ -62,6 +62,7 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const userDoc = await User.findOne({ email });
+    debugger
     if (userDoc) {
         const passOk = bcrypt.compareSync(password, userDoc.password);
         if (passOk) {
@@ -159,7 +160,7 @@ app.post('/places', (req, res) => {
             owner: userData.id,
             title, 
             address, 
-            photos,
+            photos:addedPhotos,
             description, 
             perks, 
             extraInfo, 
@@ -171,7 +172,26 @@ app.post('/places', (req, res) => {
     });
 });
 
+app.get('/places', async (req, res) => {
 
+    const { token } = req.cookies;
+    //userData: The decoded token payload if the verification is successful. 
+    //This typically contains user information encoded in the token.
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+      
+        const { id } = userData;
+
+        res.json(await Place.find({ owner: id }));
+    });
+
+
+});
+
+
+app.get('/places/:id', async (req, res) => {   
+    const { id } = req.params;
+    res.json(await Place.findById(id));
+});
 
 
 app.listen(4000);

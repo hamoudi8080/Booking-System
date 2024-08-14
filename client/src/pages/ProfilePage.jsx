@@ -8,10 +8,11 @@ import AccountNav from '../AccountNav';
 export default function AccountPage() {
 
     const [redirect, setRedirect] = useState(null);
-    const { ready, user, setUser } = useContext(UserContext);
+    const {ready, user, setUser } = useContext(UserContext);
 
     //first when this page render, subpage is undifiend so we need to set it to profile
     let { subpage } = useParams();
+    
     console.log(subpage);
     if (!subpage) {
         subpage = 'profile';

@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PhotosUploader from '../PhotosUploader';
 import Perks from '../Perks';
 import axios from 'axios';
 import AccountNav from '../AccountNav';
 import { Navigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+
 export default function PlacesFormPage() {
+
+    const { id } = useParams();
+
 
     const { action } = useParams();
     const [title, setTitle] = useState('');
@@ -21,6 +25,25 @@ export default function PlacesFormPage() {
     const [maxGuests, setMaxGuests] = useState(1);
 
     const [redirectToPlacesList, setRedirectToPlacesList] = useState(false);
+
+    useEffect(() => {
+        if (!id) return;
+
+        axios.get('/places/'+id).then(response =>{
+            const {data} = response;
+            setTitle(data.title);
+            setAddress(data.address);
+            setAddedPhotos(data.photos);
+            setDescription(data.description);
+            setPerks(data.perks);
+            setExtraInfo(data.extraInfo);
+            setCheckInTime(data.checkInTime);
+            setCheckOutTime(data.checkOutTime);
+            setMaxGuests(data.maxGuest);
+        });
+     }, [id]);
+     console.log({ id });
+
     function inputHeader(text) {
         return (
             <h2 className="text-2xl mt-4">{text}</h2>
@@ -51,7 +74,7 @@ export default function PlacesFormPage() {
 
         setRedirectToPlacesList(true);
     }
-    
+
     if (redirectToPlacesList && !action) {
         return <Navigate to={'/account/places'} />;
     }
