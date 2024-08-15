@@ -152,7 +152,7 @@ app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
 
 app.post('/places', (req, res) => {
     const { token } = req.cookies;
-    const { title, address, photos, description, perks, extraInfo, checkInTime, checkOutTime, maxGuests } = req.body;
+    const { title, address, addedPhotos, description, perks, extraInfo, checkInTime, checkOutTime, maxGuests } = req.body;
 
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         if (err) throw err;
@@ -193,5 +193,25 @@ app.get('/places/:id', async (req, res) => {
     res.json(await Place.findById(id));
 });
 
+
+app.put('/places/:id', async (req, res) => {
+    const { token } = req.cookies;
+    const { id } = req.params;
+    const { title, address, addedPhotos, description, perks, extraInfo, checkInTime, checkOutTime, maxGuests } = req.body;
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+        if (err) throw err;
+        const placeDoc = await Place.findById(id);
+        if (userData.id === placeDoc.owner.toString()) {
+            placeDoc.set({
+                title, address, photos: addedPhotos, description,
+                perks, extraInfo, checkInTime, checkOutTime, maxGuests
+            });
+            await placeDoc.save();
+            res.json('ok');
+        } else {
+            res.status(403).json({ error: 'Unauthorized' });
+        }
+    });
+});
 
 app.listen(4000);

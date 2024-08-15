@@ -29,8 +29,8 @@ export default function PlacesFormPage() {
     useEffect(() => {
         if (!id) return;
 
-        axios.get('/places/'+id).then(response =>{
-            const {data} = response;
+        axios.get('/places/' + id).then(response => {
+            const { data } = response;
             setTitle(data.title);
             setAddress(data.address);
             setAddedPhotos(data.photos);
@@ -41,8 +41,8 @@ export default function PlacesFormPage() {
             setCheckOutTime(data.checkOutTime);
             setMaxGuests(data.maxGuest);
         });
-     }, [id]);
-     console.log({ id });
+    }, [id]);
+
 
     function inputHeader(text) {
         return (
@@ -63,16 +63,28 @@ export default function PlacesFormPage() {
         )
     }
 
-    async function addNewPlace(ev) {
+    async function savePlace(ev) {
         ev.preventDefault();
-
-        await axios.post('/places', {
+        const placeData = {
             title, address, addedPhotos,
             description, perks, extraInfo,
             checkInTime, checkOutTime, maxGuests
-        });
-
-        setRedirectToPlacesList(true);
+        };
+        try {
+            if (id) {
+                // Update
+                await axios.put(`/places/${id}`, placeData);
+            } else {
+                // Create
+                await axios.post('/places', placeData);
+            }
+            setRedirectToPlacesList(true);
+        } catch (error) {
+            console.error('Error saving place:', error);
+            if (error.response) {
+                console.error('Error response:', error.response.data);
+            }
+        }
     }
 
     if (redirectToPlacesList && !action) {
@@ -83,7 +95,7 @@ export default function PlacesFormPage() {
 
         <div>
             <AccountNav />
-            <form onSubmit={addNewPlace}>
+            <form onSubmit={savePlace}>
 
                 <div>
                     {preInput('Title', 'Title for your place, should be and catchy as in advertisement')}
