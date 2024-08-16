@@ -24,6 +24,7 @@ export default function PlacesFormPage() {
     const [checkOutTime, setCheckOutTime] = useState('');
     const [maxGuests, setMaxGuests] = useState(1);
 
+    const [price, setPrice] = useState(100);
     const [redirectToPlacesList, setRedirectToPlacesList] = useState(false);
 
     useEffect(() => {
@@ -40,6 +41,7 @@ export default function PlacesFormPage() {
             setCheckInTime(data.checkInTime);
             setCheckOutTime(data.checkOutTime);
             setMaxGuests(data.maxGuest);
+            setPrice(data.price);
         });
     }, [id]);
 
@@ -68,7 +70,7 @@ export default function PlacesFormPage() {
         const placeData = {
             title, address, addedPhotos,
             description, perks, extraInfo,
-            checkInTime, checkOutTime, maxGuests
+            checkInTime, checkOutTime, maxGuests, price,
         };
         try {
             if (id) {
@@ -121,7 +123,7 @@ export default function PlacesFormPage() {
                 <textarea value={extraInfo} onChange={ev => setExtraInfo(ev.target.value)} />
 
                 {preInput('Check in&out times', 'add check in and out times, remember to have some time window for cleaning the room between guests')}
-                <div className="grid sm:grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
                     <div>
                         <h3 className="mt-2 -mb-1">Check in time</h3>
                         <input
@@ -140,6 +142,12 @@ export default function PlacesFormPage() {
                         <input
                             value={maxGuests}
                             onChange={ev => setMaxGuests(ev.target.value)} type="number" placeholder="Check in time" />
+                    </div>
+                    <div>
+                        <h3 className="mt-2 -mb-1">Price per night</h3>
+                        <input
+                            value={price}
+                            onChange={ev => setPrice(ev.target.value)} type="number" placeholder="Check in time" />
                     </div>
                 </div>
 

@@ -152,7 +152,7 @@ app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
 
 app.post('/places', (req, res) => {
     const { token } = req.cookies;
-    const { title, address, addedPhotos, description, perks, extraInfo, checkInTime, checkOutTime, maxGuests } = req.body;
+    const { title, address, addedPhotos, description, perks, extraInfo, checkInTime, checkOutTime, maxGuests, price, } = req.body;
 
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         if (err) throw err;
@@ -167,12 +167,13 @@ app.post('/places', (req, res) => {
             checkInTime,
             checkOutTime,
             maxGuests,
+            price,
         });
         res.json(placeDoc);
     });
 });
 
-app.get('/places', async (req, res) => {
+app.get('/user-places', async (req, res) => {
 
     const { token } = req.cookies;
     //userData: The decoded token payload if the verification is successful. 
@@ -197,14 +198,14 @@ app.get('/places/:id', async (req, res) => {
 app.put('/places/:id', async (req, res) => {
     const { token } = req.cookies;
     const { id } = req.params;
-    const { title, address, addedPhotos, description, perks, extraInfo, checkInTime, checkOutTime, maxGuests } = req.body;
+    const { title, address, addedPhotos, description, perks, extraInfo, checkInTime, checkOutTime, maxGuests, price, } = req.body;
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         if (err) throw err;
         const placeDoc = await Place.findById(id);
         if (userData.id === placeDoc.owner.toString()) {
             placeDoc.set({
                 title, address, photos: addedPhotos, description,
-                perks, extraInfo, checkInTime, checkOutTime, maxGuests
+                perks, extraInfo, checkInTime, checkOutTime, maxGuests, price,
             });
             await placeDoc.save();
             res.json('ok');
@@ -213,5 +214,12 @@ app.put('/places/:id', async (req, res) => {
         }
     });
 });
+
+
+
+app.get('/places', async (req, res) => {
+    res.json(await Place.find());
+});
+
 
 app.listen(4000);
