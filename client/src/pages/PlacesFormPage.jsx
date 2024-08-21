@@ -20,8 +20,8 @@ export default function PlacesFormPage() {
     const [description, setDescription] = useState('');
     const [perks, setPerks] = useState([]);
     const [extraInfo, setExtraInfo] = useState('');
-    const [checkInTime, setCheckInTime] = useState('');
-    const [checkOutTime, setCheckOutTime] = useState('');
+    const [checkIn, setCheckInTime] = useState('');
+    const [checkOut, setCheckOutTime] = useState('');
     const [maxGuests, setMaxGuests] = useState(1);
 
     const [price, setPrice] = useState(100);
@@ -38,9 +38,9 @@ export default function PlacesFormPage() {
             setDescription(data.description);
             setPerks(data.perks);
             setExtraInfo(data.extraInfo);
-            setCheckInTime(data.checkInTime);
-            setCheckOutTime(data.checkOutTime);
-            setMaxGuests(data.maxGuest);
+            setCheckInTime(data.checkIn);
+            setCheckOutTime(data.checkOut);
+            setMaxGuests(data.maxGuests);
             setPrice(data.price);
         });
     }, [id]);
@@ -70,7 +70,7 @@ export default function PlacesFormPage() {
         const placeData = {
             title, address, addedPhotos,
             description, perks, extraInfo,
-            checkInTime, checkOutTime, maxGuests, price,
+            checkIn, checkOut, maxGuests, price,
         };
         try {
             if (id) {
@@ -127,15 +127,15 @@ export default function PlacesFormPage() {
                     <div>
                         <h3 className="mt-2 -mb-1">Check in time</h3>
                         <input
-                            value={checkInTime}
-                            onChange={ev => setCheckInTime(ev.target.value)} type="text" placeholder="14" />
+                            value={checkIn}
+                            onChange={ev => setCheckInTime(ev.target.value)} type="text" placeholder="11" />
 
                     </div>
                     <div>
                         <h3 className="mt-2 -mb-1">Check out time</h3>
                         <input
-                            value={checkOutTime}
-                            onChange={ev => setCheckOutTime(ev.target.value)} type="text" placeholder="11" />
+                            value={checkOut}
+                            onChange={ev => setCheckOutTime(ev.target.value)} type="text" placeholder="23" />
                     </div>
                     <div>
                         <h3 className="mt-2 -mb-1">Max number of guests</h3>

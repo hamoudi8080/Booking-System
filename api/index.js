@@ -11,7 +11,7 @@ const app = express();
 const fs = require('fs');
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'fdafkdhnalkfhsjhkl4h1312d';
-
+const Booking = require('./models/Booking');
 const imageDownloader = require('image-downloader');
 const multer = require('multer');
 // that tells the Express app to automatically parse incoming requests with JSON payloads. 
@@ -34,6 +34,15 @@ app.use(cors({
 
 // Now process.env.MONGO_URL should be defined
 mongoose.connect(process.env.MONGO_URL);
+
+function getUserDataFromReq(req) {
+    return new Promise((resolve, reject) => {
+        jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
+            if (err) throw err;
+            resolve(userData);
+        });
+    });
+}
 
 app.get('/api', (req, res) => {
     res.json('Hello from server!');
@@ -158,12 +167,12 @@ app.post('/places', (req, res) => {
         if (err) throw err;
         const placeDoc = await Place.create({
             owner: userData.id,
-            title, 
-            address, 
-            photos:addedPhotos,
-            description, 
-            perks, 
-            extraInfo, 
+            title,
+            address,
+            photos: addedPhotos,
+            description,
+            perks,
+            extraInfo,
             checkInTime,
             checkOutTime,
             maxGuests,
@@ -179,7 +188,7 @@ app.get('/user-places', async (req, res) => {
     //userData: The decoded token payload if the verification is successful. 
     //This typically contains user information encoded in the token.
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
-      
+
         const { id } = userData;
 
         res.json(await Place.find({ owner: id }));
@@ -189,7 +198,7 @@ app.get('/user-places', async (req, res) => {
 });
 
 
-app.get('/places/:id', async (req, res) => {   
+app.get('/places/:id', async (req, res) => {
     const { id } = req.params;
     res.json(await Place.findById(id));
 });
@@ -198,14 +207,14 @@ app.get('/places/:id', async (req, res) => {
 app.put('/places/:id', async (req, res) => {
     const { token } = req.cookies;
     const { id } = req.params;
-    const { title, address, addedPhotos, description, perks, extraInfo, checkInTime, checkOutTime, maxGuests, price, } = req.body;
+    const { title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests, price } = req.body;
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         if (err) throw err;
         const placeDoc = await Place.findById(id);
         if (userData.id === placeDoc.owner.toString()) {
             placeDoc.set({
                 title, address, photos: addedPhotos, description,
-                perks, extraInfo, checkInTime, checkOutTime, maxGuests, price,
+                perks, extraInfo, checkIn, checkOut, maxGuests, price,
             });
             await placeDoc.save();
             res.json('ok');
@@ -221,5 +230,49 @@ app.get('/places', async (req, res) => {
     res.json(await Place.find());
 });
 
+app.post('/bookings', (req, res) => {
+    const { place, checkIn, checkOut, guests, name, phone, price } = req.body;
+    //const userData = getUserDataFromReq(req);
+    const { token } = req.cookies;
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+        if (err) throw err;
+        Booking.create({
+            place,
+            checkIn,
+            checkOut,
+            guests,
+            name,
+            phone,
+            price,
+            user: userData.id,
+        }).then((doc) => {
+
+            res.json(doc);
+        }).catch((err) => {
+            res.json(err);
+        });
+    });
+
+
+});
+
+
+
+
+app.get('/bookings', async (req, res) => {
+    try {
+        // const userData = await getUserDataFromReq(req);
+        const { token } = req.cookies;
+        jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+            if (err) throw err;
+            const bookings = await Booking.find({ user: userData.id }).populate('place');
+            res.status(200).json(bookings);
+        });
+
+       
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 app.listen(4000);
