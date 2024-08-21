@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { UserContext } from './UserContext';
+import { Link } from 'react-router-dom';
 export default function BookingWidget({ place }) {
     const [checkIn, setCheckIn] = useState('');
     const [checkOut, setCheckOut] = useState('');
@@ -49,12 +50,12 @@ export default function BookingWidget({ place }) {
             <div className="border rounded-2xl mt-4">
                 <div className="flex">
                     <div className="px-3 py-4">
-                        <label>Check in</label>
+                        <label>Check in </label>
                         <input type="date" value={checkIn} onChange={ev => setCheckIn(ev.target.value)} />
                     </div>
 
                     <div className="px-4 py-4 border-l">
-                        <label>Check out</label>
+                        <label>Check out </label>
                         <input type="date" value={checkOut} onChange={ev => setCheckOut(ev.target.value)} />
                     </div>
                 </div>
@@ -72,13 +73,18 @@ export default function BookingWidget({ place }) {
                     </div>
                 )}
             </div>
-
-            <button onClick={bookThisPlace} className="primary mb-4"> Book this place
-                {
-                    checkIn && checkOut && <span> for ${numberOfNights * place.price}</span>
-                }
-
-            </button>
+ 
+            {user === null ? (
+                <div className="text-center mt-4">
+                    <h2>You must login first in order to book this place</h2>
+                    <Link to="/login" className="underline">Login</Link> to book this place
+                </div>
+            ) : (
+                <button onClick={bookThisPlace} className="primary mb-4">
+                    Book this place
+                    {checkIn && checkOut && <span> for ${numberOfNights * place.price}</span>}
+                </button>
+            )}
         </div>
     );
 }

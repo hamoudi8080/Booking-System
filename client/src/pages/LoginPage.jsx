@@ -2,6 +2,7 @@ import { Link, Navigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import axios from 'axios';
 import { UserContext } from "../UserContext";
+import Swal from 'sweetalert2';  // Correct import for SweetAlert2
 
 export default function LoginPage() {
     
@@ -9,6 +10,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
     const {setUser} =  useContext(UserContext);
+    const{user} = useContext(UserContext);
 
     async function handleLoginSubmit(ev) {
         ev.preventDefault();
@@ -17,20 +19,30 @@ export default function LoginPage() {
                 email,
                 password
             });
-            setUser(response.data);
-            alert('Login Successful');
+             setUser(response.data);
+
+            Swal.fire({
+                title:'Successfully Logged In',
+                text: `Welcome, ${response.data.name}`,
+                icon: 'success',
+            });
+            //alert('Login Successful');
            
             setRedirect(true);
         } catch (error) {
-           
-            alert('Login Failed. Please try again.');
+
+            Swal.fire({
+                title: 'Login Failed',
+                text: 'Please try again.',
+                icon: 'error',
+            });
         }
 
     }
 
 
     if (redirect) {
-        return <Navigate to={'/'} />;
+        return <Navigate to={'/'}   />;
     }
     return (
         <div className="mt-4 grow flex items-center justify-around">
