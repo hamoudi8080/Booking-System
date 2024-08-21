@@ -10,6 +10,15 @@ images are saved on local storage, but it can also be saved in containers blob i
 client must be authenticated against database.
 client must be authorized to have access to a certain functionality.
 
+As an admin, I want to have an account so that I can manage places.
+As an admin, I want to added places(accomdations) with its informations and images so that users can book them.
+As a user, I want to register so that I have an an in database.
+As a user, I want to securely log in so that I can book a place.
+more in details soon.....
+
+
+
+
 installation and source of information, is in readme file inside client folder. 
 
 more in details soon.....
