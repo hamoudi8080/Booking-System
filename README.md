@@ -6,6 +6,10 @@ As a continuous learner, this project is aimed at self-training to enhance and g
 
 To protect my API endpoints, I am using JWT. For more details about it, refer to the `client` folder > `README.md` file.
 
+The application will be dockerized that involves packaging it into containers, which are lightweight, portable units that include everything needed to run the software, such as the code, runtime, libraries, and dependencies. This approach helps ensure that the application runs consistently across different environments, whether it's on a developer's local machine, a testing server, or a production environment.
+
+By using Docker, the configuration and environment management become simpler because all the necessary components are encapsulated within the container. This means that the development team doesn't have to worry about variations in software versions or configurations that could cause issues when moving the application between environments. Essentially, Docker ensures that "it works on my machine" actually means it will work anywhere.  
+
 Images are saved on local storage, but they can also be saved in Azure Blob Storage as an option.
 
 Clients must be authenticated against the database and authorized to access certain functionalities.

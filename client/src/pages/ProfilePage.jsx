@@ -13,12 +13,12 @@ export default function AccountPage() {
     //first when this page render, subpage is undifiend so we need to set it to profile
     let { subpage } = useParams();
     
-    console.log(subpage);
+   
     if (!subpage) {
         subpage = 'profile';
     }
 
-    console.log(subpage);
+ 
 
     async function logout() {
         await axios.post('/logout');

@@ -71,7 +71,7 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const userDoc = await User.findOne({ email });
-    debugger
+    
     if (userDoc) {
         const passOk = bcrypt.compareSync(password, userDoc.password);
         if (passOk) {
@@ -88,8 +88,6 @@ app.post('/login', async (req, res) => {
                         throw err; // Consider handling the error more gracefully
                     }
                     // Set the token in the cookie correctly and send a userDoc as response
-                    console.log(token);
-                    console.log("userDoc" + userDoc);
                     res.cookie('token', token).json(userDoc);
                 });
         } else {
