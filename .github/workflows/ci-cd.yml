@@ -1,44 +1,31 @@
-name: CI-CD Pipeline for MERN App
+name: Publish Docker images with Docker Compose
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-   branches:
-      - main    
+    branches: ['main']  # Adjust the branch name as needed
 
 jobs:
-  build:
+  push_to_registry:
+    name: Push Docker images to Docker Hub
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      # Step 1: Check out the repository
+      - name: Check out the repository
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      # Step 2: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Install backend dependencies
-      run: npm install
+      # Step 3: Set up Docker Buildx (optional, for better multi-platform builds)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Install frontend dependencies
-      run: |
-        cd client
-        npm install
-
-    - name: Run tests
-      run: npm test
-
-    - name: Build frontend
-      run: |
-        cd client
-        npm run build
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: build
-        path: ./client/build
+      # Step 4: Build and push images using Docker Compose
+      - name: Build and push Docker images with Compose
+        run: |
+          docker-compose -f docker-compose.yml build
+          docker-compose -f docker-compose.yml push
