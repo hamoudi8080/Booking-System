@@ -2,7 +2,7 @@ name: Publish Docker images with Docker Compose
 
 on:
   push:
-    branches: ['main']  # Adjust the branch name as needed
+    branches: ['main']  # Adjust this to your branch name
 
 jobs:
   push_to_registry:
@@ -13,18 +13,24 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v3
 
-      # Step 2: Log in to Docker Hub
+      # Step 2: Install Docker Compose
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      # Step 3: Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 3: Set up Docker Buildx (optional, for better multi-platform builds)
+      # Step 4: Set up Docker Buildx (Optional, for better multi-platform builds)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Step 4: Build and push images using Docker Compose
+      # Step 5: Build and push images using Docker Compose
       - name: Build and push Docker images with Compose
         run: |
           docker-compose -f docker-compose.yml build
