@@ -1,41 +1,45 @@
 name: Publish Docker images with Docker Compose
 
+
 on:
   push:
-    branches: ['main']  # Adjust this to your branch name
+    branches:
+      - main
 
 jobs:
-  push_to_registry:
-    name: Push Docker images to Docker Hub
+  build:
     runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+
     steps:
-      # Step 1: Check out the repository
-      - name: Check out the repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      # Step 2: List files in the repository
-      - name: List files
-        run: ls -la
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      # Step 3: Install Docker Compose
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
-      # Step 4: Log in to Docker Hub
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 5: Set up Docker Buildx (Optional, for better multi-platform builds)
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      # Step 6: Build and push images using Docker Compose
-      - name: Build and push Docker images with Compose
+      - name: Build and push frontend image
         run: |
-          docker-compose -f docker-compose.yaml build
-          docker-compose -f docker-compose.yaml push
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./client
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+
+      - name: Build and push backend image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./api
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+
+      - name: Deploy services
+        run: |
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d
