@@ -31,4 +31,13 @@ Clients must be authenticated against the database and authorized to access cert
 
 For installation and all technical information, please refer to the `README.md` file inside the `client` folder.
 
+
+## for testing
+npm init -y
+npm install mocha chai axios --save
+npm install mochawesome rimraf @faker-js/faker properties-reader --save
+and to run the test fx
+npx mocha ./tests/login.test.js
+
+
 More details will be added soon...

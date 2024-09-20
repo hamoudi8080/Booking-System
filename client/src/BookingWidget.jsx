@@ -48,8 +48,8 @@ export default function BookingWidget({ place }) {
             <h2 className="text-2xl text-center">Prise: ${place.price} /per night</h2>
 
             <div className="border rounded-2xl mt-4">
-                <div className="flex">
-                    <div className="px-3 py-4">
+                <div className="flex flex-col xl:flex-row">
+                    <div className="px-4 py-4">
                         <label>Check in </label>
                         <input type="date" value={checkIn} onChange={ev => setCheckIn(ev.target.value)} />
                     </div>

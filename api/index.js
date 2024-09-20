@@ -17,7 +17,7 @@ const multer = require('multer');
 // that tells the Express app to automatically parse incoming requests with JSON payloads. 
 //This means that it converts the JSON payload of incoming requests into JavaScript objects
 app.use(express.json());
-
+ 
 app.use(cookieParser());
 
 //without this line, the server would not be able to serve the images or display image in the browser.
@@ -282,4 +282,11 @@ app.get('/bookings', async (req, res) => {
     }
 });
 
-app.listen(4000);
+module.exports = app;  // Export the app for testing
+
+if (require.main === module) {
+    app.listen(4000, () => {
+      console.log('Server running on port 4000');
+    });
+  }
+  

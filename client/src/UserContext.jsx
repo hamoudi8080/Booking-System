@@ -18,6 +18,7 @@ export function UserContextProvider(props) {
            axios.get('/profile').then(({data}) => {
             setUser(data);
             setReady(true);
+            console.log(data);
            });
     
         }

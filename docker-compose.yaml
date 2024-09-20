@@ -1,10 +1,11 @@
 # first of all we need to create a this docker-compose.yaml file
 # to configure mutiple dockers and combine them(docker for frontend, backend, and docker for database) 
 #in this projec at the same time.
-services:
-  client:
-    build:
-      context: ./client
+
+# services:
+#   client:
+#     build:
+#       context: ./client
       
     #   dockerfile: Dockerfile
     # ports:
@@ -12,3 +13,34 @@ services:
     # volumes:
     #   - /app/node_modules
     #   - ./client:/app
+
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - frontend
+    restart: always
+    volumes:
+      - ./api:/app
+      - /app/node_modules
