@@ -4,7 +4,7 @@ This is a full-stack web application using the MERN stack (MongoDB, Express, Rea
 
 As a continuous learner, this project is aimed at self-training to enhance and grow my skills. The project is quite extensive and includes functionalities from front-end to back-end.
 
-To protect my API endpoints, I am using JWT. For more details about it, refer to the `client` folder > `README.md` file.
+To protect my API endpoints, I am using JWT. For more details about it, go to the `client` folder > `README.md` file.
 
 The application will be dockerized that involves packaging it into containers, which are lightweight, portable units that include everything needed to run the software, such as the code, runtime, libraries, and dependencies. This approach helps ensure that the application runs consistently across different environments, whether it's on a developer's local machine, a testing server, or a production environment.
 
@@ -29,7 +29,7 @@ Clients must be authenticated against the database and authorized to access cert
 
 ## Installation and Technical Information
 
-For installation and all technical information, please refer to the `README.md` file inside the `client` folder.
+For installation and all technical information, please go to the `README.md` file inside the `client` folder.
 
 
 ## for testing
